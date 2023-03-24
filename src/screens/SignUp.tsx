@@ -1,22 +1,21 @@
 import { useNavigation } from '@react-navigation/native'
 import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base'
-import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
 
 import BackgroundImg from '@assets/background.png'
 import LogoSvg from "@assets/logo.svg"
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
-export function SignIn() {
+export function SignUp() {
 
-    const navigation = useNavigation<AuthNavigatorRoutesProps>();
+    const navigation = useNavigation()
 
-    function handleNewAcount(){
-        navigation.navigate("signUp")
+    function handleGoBack(){
+        navigation.goBack()
     }
 
     return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}} showsHorizontalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsHorizontalScrollIndicator={false}>
             <VStack px={10} flex={1}>
                 <Image
                     alt='Pessoas treinando'
@@ -34,7 +33,7 @@ export function SignIn() {
 
                 <Center>
                     <Heading fontSize="xl" mb={6} fontFamily="heading" color="gray.100">
-                        Acesse sua conta
+                        Crie sua conta
                     </Heading>
 
                     <Input
@@ -48,22 +47,21 @@ export function SignIn() {
                         secureTextEntry
                     />
 
+                    <Input
+                        placeholder='Nome'
+                    />
+
                     <Button
-                        title='Acessar'
+                        title='Criar e acessar'
                     />
 
                 </Center>
 
-                <Center mt={24}>
-                    <Text color="gray.100" fontSize="sm" mb={3} fontFamily="body">
-                        Ainda não tem acesso?
-                    </Text>
-                </Center>
-
                 <Button
-                    title='Criar conta'
+                    mt={24}
+                    title='Voltar para o login'
                     variant="outline"
-                    onPress={handleNewAcount}
+                    onPress={handleGoBack}
                 />
 
             </VStack>
