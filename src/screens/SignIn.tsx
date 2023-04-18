@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base'
+import { VStack, Image, Text, Center, Heading, ScrollView, useToast } from 'native-base'
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
 
 import BackgroundImg from '@assets/background.png'
@@ -9,6 +9,9 @@ import { Button } from '@components/Button'
 import { useForm, Controller } from "react-hook-form"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useAuth } from '@hooks/useAuth'
+import { AppError } from '@utils/AppError'
+import { useState } from 'react'
 
 type FormDataProps = {
     password: string;
@@ -21,6 +24,11 @@ const signInSchema = yup.object({
 })
 
 export function SignIn() {
+    const [isLoading, setIsLoading] = useState(false)
+
+    const toast = useToast()
+
+    const { signIn } = useAuth()
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
         resolver: yupResolver(signInSchema)
@@ -32,8 +40,23 @@ export function SignIn() {
         navigation.navigate("signUp")
     }
 
-    function handleSignUp(data: FormDataProps) {
-        console.log(data)
+    async function handleSignUp({ email, password }: FormDataProps) {
+        try {
+            setIsLoading(true)
+            await signIn(email, password)
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+
+            const title = isAppError ? error.message : "Não foi possível entrar. Tente novamente mais tarde."
+
+            setIsLoading(false)
+
+            toast.show({
+                title,
+                placement: "top",
+                bgColor: "red.500"
+            })
+        }
     }
 
     return (
@@ -91,6 +114,7 @@ export function SignIn() {
                     <Button
                         title='Acessar'
                         onPress={handleSubmit(handleSignUp)}
+                        isLoading={isLoading}
                     />
 
                 </Center>
